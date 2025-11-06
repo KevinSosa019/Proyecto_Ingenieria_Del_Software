@@ -14,14 +14,23 @@
     </div>
 
     <!-- Botones de acción -->
-    <div class="d-flex justify-content-end mb-4">
-        <a href="{% url 'register' %}" class="btn btn-outline-info me-2">
+   
+    <div class="d-flex justify-content-end mb-4 gap-2">
+        <a href="{% url 'register' %}" class="btn btn-outline-info fw-bold">
             <i class="bi bi-person-plus"></i> Crear Usuario
         </a>
-        <a href="#" class="btn btn-outline-light">
+        
+        <a href="{% url 'maquinas_inicio' %}" class="btn btn-outline-danger fw-bold">
+            <i class="bi bi-hammer"></i> Crear Máquinas
+        </a>
+        <a href="#" class="btn btn-outline-light fw-bold">
             <i class="bi bi-building"></i> Crear Proveedor
         </a>
+        <a href="{% url 'ordenes_trabajo_inicio' %}" class="btn btn-outline-success fw-bold">
+            <i class="bi bi-list-check"></i> Ordenes de Trabajo
+        </a>
     </div>
+
 
     <!-- Tarjetas métricas -->
     <div class="row g-4 mb-5">
