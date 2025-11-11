@@ -2,16 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 from .models import Usuario, Maquina, Proveedor, OrdenTrabajo, Mantenimiento, MantenimientoDetalleRepuesto, ResultadoMantenimiento, Tecnico, InventarioRepuesto
-from .forms import UsuarioForm, MaquinaForm, OrdenTrabajoForm
+from .forms import UsuarioForm, MaquinaForm, OrdenTrabajoForm, ProveedorForm
 from django.db import transaction, IntegrityError
 
 
 # ==========================
 # Vista de inicio (home)
 # ==========================
-
-# views.py
-
 def home(request):
     user = None
     if 'user_id' in request.session:
@@ -22,7 +19,7 @@ def home(request):
     return render(request, 'core/home.html', {'user': user})
 
 # ==========================
-# Vista de productos (login requerido)
+# Vista de productos
 # ==========================
 def products(request):
     user = None
@@ -67,11 +64,10 @@ def register(request):
             data['form'] = user_form
 
     return render(request, 'registration/register.html', data)
+
 # ==========================
 # Login de usuario
 # ==========================
-
-
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
@@ -98,7 +94,7 @@ def login_view(request):
 
                 messages.success(request, f'Bienvenido {user.primer_nombre}!')
 
-                # 🔹 Redirección según rol
+                # Redirección según rol
                 if user.rol:
                     rol_nombre = user.rol.nombre.lower().strip()
                     print(f"Rol detectado: {rol_nombre}")
@@ -157,13 +153,11 @@ def admin_inicio(request):
     proveedores = Proveedor.objects.filter(activo=True)
     total_proveedores = proveedores.count()
 
-    # --- Alertas simuladas (puedes luego conectar con una tabla real si la agregas) ---
-    alertas = [
-        {"descripcion": "Temperatura alta en máquina MX-2025", "tiempo": "Hace 2 días"},
-        {"descripcion": "Error de conexión con servidor", "tiempo": "Hace 1 día"},
-    ]
-    alertas_activas = len(alertas)
+    # --- Órdenes de Trabajo ---
+    ordenes_trabajo = OrdenTrabajo.objects.select_related('maquina', 'tipo', 'prioridad', 'estado').all()
+    total_ordenes = ordenes_trabajo.count()
 
+    # --- Contexto para la plantilla ---
     context = {
         'usuarios': usuarios,
         'usuarios_activos': usuarios_activos,
@@ -173,8 +167,9 @@ def admin_inicio(request):
         'total_maquinas': total_maquinas,
         'porcentaje_operativas': porcentaje_operativas,
         'proveedores': proveedores,
-        'alertas': alertas,
-        'alertas_activas': alertas_activas,
+        'total_proveedores': total_proveedores,
+        'ordenes_trabajo': ordenes_trabajo,
+        'total_ordenes': total_ordenes,
     }
 
     return render(request, 'admin_maquinas/admin_inicio.html', context)
@@ -186,7 +181,9 @@ def usuario_inicio(request):
     return render(request, 'usuario/usuario_inicio.html')
 
 
-# Listar usuarios
+# ==========================
+# Usuarios
+# ==========================
 def usuarios_list(request):
     usuarios = Usuario.objects.all()
     return render(request, 'admin_usuarios/usuarios_list.html', {'usuarios': usuarios})
@@ -302,11 +299,9 @@ def maquina_delete(request, id):
     return redirect('maquinas_list')
 
 
-
 # ==========================
 # Ordenes de Trabajo
 # ==========================
-
 def ordenes_trabajo_inicio(request):
     ordenes = OrdenTrabajo.objects.all()
     if request.method == 'POST':
@@ -352,10 +347,10 @@ def orden_trabajo_update(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, 'Orden de trabajo actualizada correctamente.')
-            return redirect('ordenes_trabajo_list')
+            return redirect('ordenes_trabajo_inicio')
     else:
         form = OrdenTrabajoForm(instance=orden)
-    return render(request, 'admin_ordenes/editar_orden_trabajo.html', {'form': form})
+    return render(request, 'admin_maquinas/editar_orden_trabajo.html', {'form': form})
 
 # Eliminar orden de trabajo
 
@@ -386,3 +381,61 @@ def orden_trabajo_delete(request, id):
     ordenes = OrdenTrabajo.objects.all()
     return render(request, 'admin_maquinas/ordenes_trabajo_inicio.html', {'ordenes': ordenes})
 
+
+
+# ==========================
+# Proveedores
+# ==========================
+def proveedores_inicio(request):
+    proveedores = Proveedor.objects.all().order_by('nombre')
+    form = ProveedorForm()
+
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Proveedor registrado correctamente.")
+            return redirect('proveedores_inicio')
+        else:
+            messages.error(request, "Error al registrar el proveedor. Verifica los datos.")
+
+    return render(request, 'admin_maquinas/proveedores_inicio.html', {
+        'form': form,
+        'proveedores': proveedores
+    })
+
+#  Crear proveedor
+def proveedor_create(request):
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Proveedor agregado correctamente.')
+            return redirect('proveedores_inicio')
+    else:
+        form = ProveedorForm()
+    return render(request, 'admin_maquinas/proveedor_form.html', {'form': form})
+
+
+#  Editar proveedor
+def proveedor_update(request, id):
+    proveedor = get_object_or_404(Proveedor, id=id)
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, instance=proveedor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Proveedor actualizado correctamente.')
+            return redirect('proveedores_inicio')
+    else:
+        form = ProveedorForm(instance=proveedor)
+    return render(request, 'admin_maquinas/editar_proveedores.html', {'form': form})
+
+
+#  Eliminar proveedor
+def proveedor_delete(request, id):
+    proveedor = get_object_or_404(Proveedor, id=id)
+    if request.method == 'POST':
+        proveedor.delete()
+        messages.success(request, 'Proveedor eliminado correctamente.')
+        return redirect('proveedores_inicio')
+    return redirect('proveedores_inicio')

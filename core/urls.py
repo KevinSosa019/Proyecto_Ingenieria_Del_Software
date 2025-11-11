@@ -3,7 +3,7 @@ from .views import home, products, register, login_view, logout_view, admin_inic
 from .views import usuarios_list, usuario_create, usuario_update, usuario_delete
 from .views import maquinas_list, maquina_create, maquina_update, maquina_delete
 from .views import ordenes_trabajo_list, orden_trabajo_create, orden_trabajo_update, orden_trabajo_delete, ordenes_trabajo_inicio
-
+from .views import proveedores_inicio, proveedor_create, proveedor_delete, proveedor_update
 urlpatterns = [
     path('', home, name='home'),
     path('products/', products, name='products'),
@@ -36,4 +36,8 @@ urlpatterns = [
     path('ordenes_trabajo/eliminar/<int:id>/', orden_trabajo_delete, name='orden_trabajo_delete'),
 
 
+    path('proveedores/', proveedores_inicio, name='proveedores_inicio'),
+    path('proveedores/crear/', proveedor_create, name='proveedor_create'),
+    path('proveedores/editar/<int:id>/', proveedor_update, name='proveedor_update'),
+    path('proveedores/eliminar/<int:id>/', proveedor_delete, name='proveedor_delete'),
 ]

@@ -1,6 +1,6 @@
 from django import forms
 from .models import Usuario, Maquina, OrdenTrabajo
-from .models import OrdenTrabajo, Maquina, Tipo, Prioridad, Estado, Tecnico, Usuario
+from .models import OrdenTrabajo, Maquina, Tipo, Prioridad, Estado, Tecnico, Usuario, Proveedor
 
 
 class UsuarioForm(forms.ModelForm):
@@ -75,3 +75,9 @@ class OrdenTrabajoForm(forms.ModelForm):
             'fecha_inicio': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'fecha_finalizacion': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
+#---------------------------------------------------------------
+class ProveedorForm(forms.ModelForm):
+    class Meta:
+        model = Proveedor
+        fields = ['nombre', 'contacto', 'telefono', 'email', 'direccion', 'rtn', 'activo']

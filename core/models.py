@@ -32,7 +32,7 @@ class Usuario(models.Model):
 
     class Meta:
         db_table = 'usuarios'
-        managed = False  # Muy importante: Django NO tocará la tabla
+        managed = False  
 
     def __str__(self):
         return f"{self.primer_nombre} {self.primer_apellido}"
@@ -56,19 +56,18 @@ class Proveedor(models.Model):
     nombre = models.CharField(max_length=100)
     contacto = models.CharField(max_length=100, null=True, blank=True)
     telefono = models.CharField(max_length=20, null=True, blank=True)
-    email = models.CharField(max_length=100, null=True, blank=True)
+    email = models.EmailField(max_length=100, null=True, blank=True)
     direccion = models.TextField(null=True, blank=True)
     rtn = models.CharField(max_length=50, null=True, blank=True)
-    tipo_servicio = models.CharField(max_length=100, null=True, blank=True)
-    calificacion = models.TextField(null=True, blank=True)
     activo = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'proveedores'
-        managed = False
+        managed = False  
 
     def __str__(self):
         return self.nombre
+
 
 
 class Maquina(models.Model):
@@ -78,7 +77,6 @@ class Maquina(models.Model):
     fecha_adquisicion = models.DateField(null=True, blank=True)
     estado = models.ForeignKey(EstadoMaquina, on_delete=models.DO_NOTHING, db_column='estado_id', null=True)
     proveedor = models.ForeignKey(Proveedor, on_delete=models.DO_NOTHING, db_column='proveedor_id', null=True)
-    # 🔹 Nuevos campos que existen en tu BD:
     ubicacion = models.ForeignKey('Ubicacion', on_delete=models.DO_NOTHING, db_column='ubicacion_id', null=True)
     usuario_asignado = models.ForeignKey('Usuario', on_delete=models.DO_NOTHING, db_column='usuario_asignado_id', null=True)
     notas = models.TextField(null=True, blank=True)
@@ -161,7 +159,7 @@ class Mantenimiento(models.Model):
     id = models.AutoField(primary_key=True)
     orden_trabajo = models.ForeignKey(
         'OrdenTrabajo',
-        on_delete=models.CASCADE,  # 🔥 cambio importante
+        on_delete=models.CASCADE, 
         db_column='orden_trabajo_id'
     )
     acciones_realizadas = models.TextField(null=True, blank=True)

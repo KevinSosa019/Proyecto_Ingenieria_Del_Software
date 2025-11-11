@@ -14,23 +14,20 @@
     </div>
 
     <!-- Botones de acción -->
-   
     <div class="d-flex justify-content-end mb-4 gap-2">
         <a href="{% url 'register' %}" class="btn btn-outline-info fw-bold">
             <i class="bi bi-person-plus"></i> Crear Usuario
         </a>
-        
         <a href="{% url 'maquinas_inicio' %}" class="btn btn-outline-danger fw-bold">
             <i class="bi bi-hammer"></i> Crear Máquinas
         </a>
-        <a href="#" class="btn btn-outline-light fw-bold">
+        <a href="{% url 'proveedores_inicio' %}" class="btn btn-outline-light fw-bold">
             <i class="bi bi-building"></i> Crear Proveedor
         </a>
         <a href="{% url 'ordenes_trabajo_inicio' %}" class="btn btn-outline-success fw-bold">
             <i class="bi bi-list-check"></i> Ordenes de Trabajo
         </a>
     </div>
-
 
     <!-- Tarjetas métricas -->
     <div class="row g-4 mb-5">
@@ -48,16 +45,16 @@
             </div>
         </div>
 
-        <!-- Alertas -->
+        <!-- Órdenes de Trabajo -->
         <div class="col-md-6 col-lg-4">
             <div class="card bg-secondary shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="text-light">Alertas Activas</h6>
-                        <i class="bi bi-exclamation-triangle text-warning fs-4"></i>
+                        <h6 class="text-light">Órdenes de Trabajo</h6>
+                        <i class="bi bi-clipboard-check text-warning fs-4"></i>
                     </div>
-                    <h2 class="fw-bold text-info mt-2">{{ alertas_activas|default:"0" }}</h2>
-                    <small class="text-muted">Requieren atención</small>
+                    <h2 class="fw-bold text-info mt-2">{{ total_ordenes|default:"0" }}</h2>
+                    <small class="text-muted">Registradas en el sistema</small>
                 </div>
             </div>
         </div>
@@ -82,7 +79,7 @@
         <div class="card-header bg-dark border-0">
             <ul class="nav nav-tabs card-header-tabs" id="dashboardTabs">
                 <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#machines">Máquinas</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#alerts">Alertas</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#ordenes">Órdenes de Trabajo</button></li>
                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#users">Usuarios</button></li>
                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#providers">Proveedores</button></li>
             </ul>
@@ -131,20 +128,38 @@
                     </div>
                 </div>
 
-                <!-- Alertas -->
-                <div class="tab-pane fade" id="alerts">
-                    <h5 class="text-info mb-4">Alertas del Sistema</h5>
-                    <div class="list-group">
-                        {% for alerta in alertas %}
-                        <div class="list-group-item bg-secondary text-light d-flex justify-content-between align-items-center">
-                            <div>
-                                <i class="bi bi-exclamation-triangle text-warning me-2"></i>{{ alerta.descripcion }}
-                            </div>
-                            <small>{{ alerta.tiempo }}</small>
-                        </div>
-                        {% empty %}
-                        <div class="text-center text-muted">No hay alertas activas.</div>
-                        {% endfor %}
+                <!-- Órdenes de Trabajo -->
+                <div class="tab-pane fade" id="ordenes">
+                    <h5 class="text-info mb-4">Listado de Órdenes de Trabajo</h5>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle">
+                            <thead>
+                                <tr class="text-info">
+                                    <th>Código</th>
+                                    <th>Máquina</th>
+                                    <th>Tipo</th>
+                                    <th>Prioridad</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for o in ordenes_trabajo %}
+                                <tr>
+                                    <td>{{ o.codigo }}</td>
+                                    <td>{{ o.maquina.modelo }}</td>
+                                    <td>{{ o.tipo.nombre }}</td>
+                                    <td>{{ o.prioridad.nombre }}</td>
+                                    <td>{{ o.estado.nombre }}</td>
+                                    <td>{{ o.fecha_creacion|date:"Y-m-d" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No hay órdenes registradas.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -195,7 +210,6 @@
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Correo</th>
-                                    <th>Tipo de Servicio</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -204,11 +218,10 @@
                                     <td>{{ p.nombre }}</td>
                                     <td>{{ p.telefono }}</td>
                                     <td>{{ p.email }}</td>
-                                    <td>{{ p.tipo_servicio|default:"—" }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No hay proveedores registrados.</td>
+                                    <td colspan="3" class="text-center text-muted">No hay proveedores registrados.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
