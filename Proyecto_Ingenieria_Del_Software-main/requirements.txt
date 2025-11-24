@@ -1,4 +1,0 @@
-pip install django-crispy-forms
-pip install crispy-bootstrap5
-pip install django==5.0.1
-pip install mssql-django==1.4
