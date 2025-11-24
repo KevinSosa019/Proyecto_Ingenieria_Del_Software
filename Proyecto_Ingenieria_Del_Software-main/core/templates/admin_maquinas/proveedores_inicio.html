@@ -1,0 +1,139 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="min-vh-100 bg-dark text-light py-0">
+    <div class="container">
+
+        <!-- Boton de Volver -->
+
+        <style>
+        .btn-gradient {
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            color: white;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-gradient:hover {
+            opacity: 0.85;
+            transform: scale(1.03);
+        }
+        </style>
+
+        <div class="mb-0">
+            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow">
+                <i class="bi bi-arrow-left"></i> Volver al Panel Principal
+            </a>
+        </div>
+        <!-- Boton de Volver -->
+
+
+        <h3 class="text-center text-info mb-4">Gestión de Proveedores</h3>
+        <div class="row g-4">
+            <!-- Formulario de creación -->
+            <div class="col-md-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                        <div class="card-body">
+                            <h5 class="text-info text-center mb-3">Registrar nuevo proveedor</h5>
+                            {{ form|crispy }}
+                            <button class="btn btn-info text-dark fw-bold w-100 mt-3" type="submit">
+                                Guardar Proveedor
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de proveedores -->
+            <div class="col-md-8">
+                <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                    <div class="card-body">
+                        <h5 class="text-info mb-3">Proveedores Registrados</h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover align-middle">
+                                <thead>
+                                    <tr class="text-info">
+                                        <th>Nombre</th>
+                                        <th>Contacto</th>
+                                        <th>Teléfono</th>
+                                        <th>Email</th>
+                                        <th class="text-center">Acciones</th> <!-- eliminar Tipo de Servicio -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for p in proveedores %}
+                                    <tr>
+                                        <td>{{ p.nombre }}</td>
+                                        <td>{{ p.contacto }}</td>
+                                        <td>{{ p.telefono }}</td>
+                                        <td>{{ p.email }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'proveedor_update' p.id %}" class="btn btn-success btn-sm me-2">Editar</a>
+                                            <button class="btn btn-danger btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-proveedor-id="{{ p.id }}"
+                                                    data-proveedor-nombre="{{ p.nombre }}">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">
+                                            No hay proveedores registrados.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger" id="deleteModalLabel">Eliminar Proveedor</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de eliminar al proveedor <strong id="proveedorNombre"></strong>?
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" id="deleteForm" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger fw-bold">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script del modal -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var proveedorId = button.getAttribute('data-proveedor-id');
+        var proveedorNombre = button.getAttribute('data-proveedor-nombre');
+        var modalProveedorNombre = deleteModal.querySelector('#proveedorNombre');
+        var form = deleteModal.querySelector('#deleteForm');
+
+        modalProveedorNombre.textContent = proveedorNombre;
+        form.action = "{% url 'proveedor_delete' 0 %}".replace('0', proveedorId);
+    });
+});
+</script>
+{% endblock %}
