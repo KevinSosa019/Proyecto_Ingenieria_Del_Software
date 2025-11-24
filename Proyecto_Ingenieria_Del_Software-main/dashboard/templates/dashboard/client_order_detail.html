@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Orden {{ order.codigo }} - PokerTech</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+
+<body class="bg-gray-100">
+
+<!-- HEADER -->
+<div class="bg-blue-900 text-white px-10 py-5 flex justify-between items-center shadow">
+    <h1 class="text-2xl font-bold">PokerTech</h1>
+
+    <a href="/dashboard/client/orders/" class="text-blue-200 hover:underline">
+        ← Regresar a Mis Órdenes
+    </a>
+</div>
+
+<div class="max-w-4xl mx-auto bg-white p-8 mt-8 rounded-xl shadow">
+
+    <h1 class="text-3xl font-bold mb-4">Orden {{ order.codigo }}</h1>
+
+    <p><strong>Estado:</strong> {{ order.estado }}</p>
+    <p><strong>Tipo de Problema:</strong> {{ order.tipo }}</p>
+    <p><strong>Prioridad:</strong> {{ order.prioridad }}</p>
+
+    {% if order.descripcion %}
+    <div class="mt-4">
+        <strong>Descripción del Problema:</strong>
+        <p class="text-gray-700 mt-2">{{ order.descripcion }}</p>
+    </div>
+    {% endif %}
+
+    <hr class="my-6">
+
+    <h2 class="text-2xl font-semibold mb-2">Máquina</h2>
+    <p><strong>Serial:</strong> {{ order.serial }}</p>
+    <p><strong>Modelo:</strong> {{ order.modelo }}</p>
+    <p><strong>Ubicación:</strong> {{ order.location }}</p>
+
+    <hr class="my-6">
+
+    <h2 class="text-2xl font-semibold mb-2">Técnico Asignado</h2>
+    {% if order.tecnico_nombre %}
+        <p><strong>Nombre:</strong> {{ order.tecnico_nombre }}</p>
+        <p><strong>Teléfono:</strong> {{ order.tecnico_telefono }}</p>
+    {% else %}
+        <p class="text-red-500 font-semibold">Aún no hay técnico asignado.</p>
+    {% endif %}
+
+    <hr class="my-6">
+
+    <h2 class="text-2xl font-semibold mb-2">Fechas</h2>
+    <p><strong>Creación:</strong> {{ order.fecha_creacion }}</p>
+    <p><strong>Asignación:</strong> {{ order.fecha_asignacion|default:"—" }}</p>
+    <p><strong>Inicio:</strong> {{ order.fecha_inicio|default:"—" }}</p>
+    <p><strong>Finalización:</strong> {{ order.fecha_finalizacion|default:"—" }}</p>
+
+</div>
+
+</body>
+</html>

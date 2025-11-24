@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Panel Técnico - PokerTech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-green-800 text-white">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+          <h1 class="text-xl font-semibold">PokerTech</h1>
+          <span class="ml-2 px-2 py-1 bg-green-700 rounded-full text-sm">Técnico</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+          <div class="font-semibold">
+              {{ tecnico_nombre }}
+          </div>
+      
+          <a href="/logout/"
+             class="bg-red-600 px-3 py-1 rounded text-white text-sm hover:bg-red-700">
+              Cerrar sesión
+          </a>
+      </div>
+
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+  <!-- FLASH MESSAGE -->
+  <div id="flashMessage" class="hidden max-w-7xl mx-auto mb-6 px-6">
+    <div id="flashInner" class="rounded-xl p-4 text-white"></div>
+  </div>
+
+  <!-- TITULO -->
+  <section class="mb-6">
+      <h2 class="text-3xl font-bold">Panel del Técnico</h2>
+      <p class="text-gray-600">Gestiona tus asignaciones y reporta el progreso de las reparaciones.</p>
+  </section>
+
+  <!-- ESTADO GENERAL -->
+  <section class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-6 mb-6 flex justify-between items-center">
+      <div>
+          <h3 class="text-lg font-semibold">Estado Actual</h3>
+          <p class="mt-1">
+              Tienes <strong>{{ asignadas }}</strong> órdenes asignadas —
+              <strong>{{ urgentes }}</strong> urgente
+          </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+          <!--button class="bg-white text-green-600 px-4 py-2 rounded-lg shadow">🚀 Iniciar Jornada</button>
+          <button class="bg-red-600 text-white px-4 py-2 rounded-lg shadow">🆘 Emergencia</button-->
+      </div>
+  </section>
+
+  <!-- ESTADISTICAS -->
+  <section class="grid grid-cols-4 gap-6 mb-8">
+      <div class="bg-white rounded-xl p-5 shadow">
+          <div class="text-gray-500">Órdenes Asignadas</div>
+          <div class="text-3xl font-bold mt-3">{{ asignadas }}</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 shadow">
+          <div class="text-gray-500">Completadas Hoy</div>
+          <div class="text-3xl font-bold mt-3">{{ completadas_hoy }}</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 shadow">
+          <div class="text-gray-500">Tiempo Promedio</div>
+          <div class="text-3xl font-bold mt-3">{{ tiempo_promedio }}</div>
+      </div>
+
+      <div class="bg-white rounded-xl p-5 shadow">
+          <div class="text-gray-500">Órdenes Urgentes</div>
+          <div class="text-3xl font-bold mt-3">{{ urgentes }}</div>
+      </div>
+  </section>
+
+  <!-- LISTA DE ASIGNACIONES -->
+  <section class="bg-white rounded-xl p-6 shadow mb-6">
+      <div class="flex justify-between items-center">
+          <h3 class="text-xl font-semibold">Mis Asignaciones Actuales</h3>
+
+          <div class="flex items-center gap-3">
+              <form method="GET" class="flex items-center gap-3">
+                  <select name="priority" class="border rounded px-3 py-2">
+                  
+                      <option value="" {% if priority_filter == "" %}selected{% endif %}>Todas</option>
+                  
+                      <option value="alta" {% if priority_filter == "alta" %}selected{% endif %}>Alta</option>
+                  
+                      <option value="media" {% if priority_filter == "media" %}selected{% endif %}>Media</option>
+                  
+                      <option value="baja" {% if priority_filter == "baja" %}selected{% endif %}>Baja</option>
+                  
+                      <option value="completada" {% if priority_filter == "completada" %}selected{% endif %}>Completadas</option>
+                  
+                  </select>
+              
+                  <button class="bg-green-600 text-white px-4 py-2 rounded-lg">Filtrar</button>
+              </form>
+
+          </div>
+      </div>
+  </section>
+
+  <!-- TARJETAS DE ÓRDENES -->
+  <section class="grid grid-cols-2 gap-6">
+
+    {% for order in orders %}
+      <div class="
+          rounded-xl border p-6
+          {% if order.estado|lower == 'completada' %}
+              bg-green-50 border-green-200
+          {% elif order.prioridad|lower == 'alta' %}
+              bg-red-50 border-red-200
+          {% elif order.estado|lower == 'en progreso' %}
+              bg-blue-50 border-blue-200
+          {% else %}
+              bg-white border-gray-200
+          {% endif %}
+      ">
+          <div class="flex justify-between items-start">
+
+              <!-- INFO -->
+              <div>
+                  <div class="flex items-center gap-3">
+                      <div class="text-2xl">🚨</div>
+                      <h4 class="text-lg font-bold">Orden {{ order.codigo }}</h4>
+
+                      {% if order.estado|lower == 'completada' %}
+                          <span class="ml-3 inline-block px-3 py-1 text-sm rounded-full bg-green-200 text-green-700">
+                              Completada
+                          </span>
+                      {% else %}
+                          <span class="ml-3 inline-block px-3 py-1 text-sm rounded-full
+                              {% if order.prioridad|lower == 'alta' %} bg-red-100 text-red-700
+                              {% elif order.prioridad|lower == 'media' %} bg-yellow-100 text-yellow-700
+                              {% else %} bg-green-100 text-green-700 {% endif %}
+                          ">
+                              {{ order.prioridad }}
+                          </span>
+                      {% endif %}
+
+                  </div>
+
+                  <div class="text-sm text-gray-600 mt-2">
+                      <strong>Máquina:</strong> #{{ order.serial }} - {{ order.modelo }}
+                  </div>
+
+                  <div class="text-sm text-gray-600 mt-1">
+                      <strong>Cliente:</strong> {{ order.cliente_nombre }}
+                  </div>
+
+                  <div class="text-sm text-gray-600 mt-1">
+                      <strong>Tel:</strong> {{ order.cliente_telefono }}
+                  </div>
+
+                  {% if order.descripcion %}
+                  <div class="bg-white rounded p-3 mt-3 text-gray-700">
+                      <strong>Descripción:</strong>
+                      <p class="mt-2 text-sm">{{ order.descripcion }}</p>
+                  </div>
+                  {% endif %}
+              </div>
+
+              <!-- TIEMPOS -->
+              <div class="text-right">
+                  <div class="text-sm text-gray-500">Asignada</div>
+                  <div class="text-red-600 font-semibold">
+                      {{ order.tiempo_desde|default:"—" }}
+                  </div>
+
+                  <div class="text-sm text-gray-500 mt-2">
+                      {{ order.tiempo_desde_inicio|default:"" }}
+                  </div>
+              </div>
+          </div>
+
+          <!-- ACCIONES -->
+          <div class="mt-4 flex gap-3 items-center">
+          {% if order.estado|lower != 'completada' %}
+
+            {% if not order.tecnico_id %}
+                <button onclick="openTakeModal('{{ order.id }}')"
+                        class="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm">
+                    Tomar Orden
+                </button>
+
+            {% else %}
+                {% if order.tecnico_id == tecnico_id and not order.fecha_inicio %}
+                    <form method="POST" action="{% url 'dashboard:technician_start' order.id %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+                            Iniciar Trabajo
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            <button onclick="openProgressModal('{{ order.id }}')"
+                    class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">
+                Actualizar Progreso
+            </button>
+
+            <button onclick="openCompleteModal('{{ order.id }}')"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm">
+                Marcar Completada
+            </button>
+
+            <a href="{% url 'dashboard:technician_order_detail' order.id %}"
+               class="ml-auto text-sm text-gray-600 hover:underline">
+               Ver detalle →
+            </a>
+
+          {% endif %}
+          </div>
+      </div>
+
+    {% empty %}
+      <div class="col-span-2 bg-white p-6 rounded-xl text-center text-gray-600">
+          No tienes asignaciones en este momento.
+      </div>
+    {% endfor %}
+
+  </section>
+</main>
+
+<!-- MODALES =========================================================== -->
+
+<!-- TOMAR ORDEN -->
+<div id="takeModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+  <div class="bg-white w-[520px] rounded-xl p-6 shadow-xl">
+      <h3 class="text-xl font-semibold mb-4">Confirmar: Tomar Orden</h3>
+      <p class="text-gray-700 mb-4">¿Seguro que deseas tomar esta orden?</p>
+
+      <form id="takeForm" method="POST">
+          {% csrf_token %}
+          <div class="flex justify-end gap-3">
+              <button type="button" onclick="closeTakeModal()" class="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
+              <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded">Tomar Orden</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<!-- ACTUALIZAR PROGRESO -->
+<div id="progressModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <div class="bg-white w-[600px] rounded-xl shadow-xl p-8">
+
+      <h2 class="text-2xl font-bold mb-4 flex items-center gap-2">
+          <span class="text-pink-600 text-xl">🛠️</span>
+          Actualizar Progreso
+      </h2>
+
+      <form id="progressForm" method="POST">
+          {% csrf_token %}
+
+          <label class="font-semibold">Estado</label>
+          <select name="estado_progreso" required class="border p-2 rounded w-full mb-4">
+              <option value="">Seleccionar estado</option>
+              <option value="Diagnóstico">Diagnóstico</option>
+              <option value="Pieza solicitada">Pieza solicitada</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Reparación completada">Reparación completada</option>
+          </select>
+
+          <label class="font-semibold">Descripción / Nota</label>
+          <textarea name="progreso" id="progresoText" required
+                    class="border p-2 rounded w-full mb-4 h-28"
+                    placeholder="Describe brevemente el progreso..."></textarea>
+
+          <label class="font-semibold">Adjuntos (opcional)</label>
+          <input type="file" name="adjuntos" class="mb-4" />
+
+          <div class="flex justify-between mt-6">
+              <button type="button" onclick="closeProgressModal()"
+                      class="bg-gray-200 px-6 py-2 rounded-lg hover:bg-gray-300">
+                  Cancelar
+              </button>
+
+              <button type="submit"
+                      class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                  Guardar Progreso
+              </button>
+          </div>
+      </form>
+
+  </div>
+</div>
+
+<!-- COMPLETAR ORDEN -->
+<div id="completeModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+  <div class="bg-white w-[600px] rounded-xl p-6 shadow-xl">
+
+      <h3 class="text-xl font-semibold mb-4">Completar Orden</h3>
+      <p class="text-gray-700 mb-4">¿Confirmas que este trabajo está finalizado?</p>
+
+      <form id="completeForm" method="POST">
+          {% csrf_token %}
+
+          <div id="completeResultContainer" class="hidden mb-4">
+              <label class="font-semibold">Resultado final</label>
+              <textarea name="resultado_final"
+                        class="border p-2 rounded w-full h-28"
+                        placeholder="Describe el resultado..."></textarea>
+          </div>
+
+          <div class="flex justify-end gap-3">
+              <button type="button" onclick="closeCompleteModal()" class="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
+              <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Marcar Completada</button>
+          </div>
+      </form>
+
+  </div>
+</div>
+
+<!-- SCRIPTS ============================================================ -->
+<script>
+/* FLASH MESSAGES */
+(function showFlashFromQuery(){
+    const m = new URLSearchParams(window.location.search).get("msg");
+    if(!m) return;
+
+    const wrap = document.getElementById("flashMessage");
+    const box  = document.getElementById("flashInner");
+
+    if(m === "taken")      box.className = "rounded-xl p-4 bg-yellow-600 text-white", box.textContent = "Orden tomada correctamente.";
+    else if(m === "completed") box.className = "rounded-xl p-4 bg-green-600 text-white", box.textContent = "Orden completada.";
+    else if(m === "updated")   box.className = "rounded-xl p-4 bg-blue-600 text-white",  box.textContent = "Progreso guardado.";
+    else return;
+
+    wrap.classList.remove("hidden");
+    setTimeout(()=> wrap.classList.add("hidden"), 4500);
+})();
+
+/* MODALES */
+function openTakeModal(id){
+    document.getElementById("takeForm").action = `/dashboard/technician/take/${id}/`;
+    document.getElementById("takeModal").classList.remove("hidden");
+}
+function closeTakeModal(){
+    document.getElementById("takeModal").classList.add("hidden");
+}
+
+function openProgressModal(id){
+    const f = document.getElementById("progressForm");
+    f.action = `/dashboard/technician/update/${id}/`;
+    document.getElementById("progresoText").value = "";
+    document.getElementById("progressModal").classList.remove("hidden");
+}
+function closeProgressModal(){
+    document.getElementById("progressModal").classList.add("hidden");
+}
+
+function openCompleteModal(id){
+    const f = document.getElementById("completeForm");
+    f.action = `/dashboard/technician/complete/${id}/`;
+    document.getElementById("completeModal").classList.remove("hidden");
+}
+function closeCompleteModal(){
+    document.getElementById("completeModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

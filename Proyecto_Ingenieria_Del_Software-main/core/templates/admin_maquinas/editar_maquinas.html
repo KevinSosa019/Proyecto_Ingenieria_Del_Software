@@ -1,0 +1,22 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="min-vh-100 bg-dark text-light d-flex align-items-center justify-content-center py-5">
+    <div class="card bg-secondary text-light shadow-lg" style="width: 32rem; border: none;">
+        <div class="card-body">
+            <h3 class="text-center text-info mb-4">Editar Máquina</h3>
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <a href="{% url 'maquinas_inicio' %}" class="btn btn-outline-light">Cancelar</a>
+                    <button class="btn btn-info text-dark fw-bold" type="submit">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
