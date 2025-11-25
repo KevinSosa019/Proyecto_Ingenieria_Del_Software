@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block content %}
-<div class="container-fluid py-5 text-light bg-dark min-vh-100">
+<div class="container-fluid py-5 text-dark bg-white min-vh-100">
 
     <!-- Encabezado -->
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold text-info">Panel del Administrador</h1>
-        <p class="lead text-secondary mb-0">
+    <div class="text-center mb-5 py-4" style="background-color: #dc3545; border-radius: 8px;">
+        <h1 class="display-5 fw-bold text-white">Panel del Administrador</h1>
+        <p class="lead text-white mb-0">
             Bienvenido, {{ user.primer_nombre }} {{ user.primer_apellido }}
         </p>
         <hr class="border-light mt-4">
@@ -15,13 +15,13 @@
 
     <!-- Botones de acción -->
     <div class="d-flex justify-content-end mb-4 gap-2">
-        <a href="{% url 'register' %}" class="btn btn-outline-info fw-bold">
+        <a href="{% url 'register' %}" class="btn btn-outline-primary fw-bold">
             <i class="bi bi-person-plus"></i> Crear Usuario
         </a>
         <a href="{% url 'maquinas_inicio' %}" class="btn btn-outline-danger fw-bold">
             <i class="bi bi-hammer"></i> Crear Máquinas
         </a>
-        <a href="{% url 'proveedores_inicio' %}" class="btn btn-outline-light fw-bold">
+        <a href="{% url 'proveedores_inicio' %}" class="btn btn-outline-secondary fw-bold">
             <i class="bi bi-building"></i> Crear Proveedor
         </a>
         <a href="{% url 'ordenes_trabajo_inicio' %}" class="btn btn-outline-success fw-bold">
@@ -31,29 +31,30 @@
 
     <!-- Tarjetas métricas -->
     <div class="row g-4 mb-5">
+
         <!-- Máquinas -->
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-secondary shadow-sm h-100">
+            <div class="card bg-light border shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="text-light">Máquinas Operativas</h6>
+                        <h6 class="text-dark">Máquinas Operativas</h6>
                         <i class="bi bi-check-circle text-success fs-4"></i>
                     </div>
-                    <h2 class="fw-bold text-info mt-2">{{ maquinas_operativas }}/{{ total_maquinas }}</h2>
+                    <h2 class="fw-bold text-primary mt-2">{{ maquinas_operativas }}/{{ total_maquinas }}</h2>
                     <small class="text-muted">{{ porcentaje_operativas|default:"0" }}% del total</small>
                 </div>
             </div>
         </div>
 
-        <!-- Órdenes de Trabajo -->
+        <!-- Órdenes -->
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-secondary shadow-sm h-100">
+            <div class="card bg-light border shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="text-light">Órdenes de Trabajo</h6>
+                        <h6 class="text-dark">Órdenes de Trabajo</h6>
                         <i class="bi bi-clipboard-check text-warning fs-4"></i>
                     </div>
-                    <h2 class="fw-bold text-info mt-2">{{ total_ordenes|default:"0" }}</h2>
+                    <h2 class="fw-bold text-primary mt-2">{{ total_ordenes|default:"0" }}</h2>
                     <small class="text-muted">Registradas en el sistema</small>
                 </div>
             </div>
@@ -61,39 +62,59 @@
 
         <!-- Usuarios -->
         <div class="col-md-6 col-lg-4">
-            <div class="card bg-secondary shadow-sm h-100">
+            <div class="card bg-light border shadow-sm h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="text-light">Usuarios Registrados</h6>
-                        <i class="bi bi-people text-info fs-4"></i>
+                        <h6 class="text-dark">Usuarios Registrados</h6>
+                        <i class="bi bi-people text-primary fs-4"></i>
                     </div>
-                    <h2 class="fw-bold text-info mt-2">{{ usuarios_activos }}/{{ total_usuarios }}</h2>
+                    <h2 class="fw-bold text-primary mt-2">{{ usuarios_activos }}/{{ total_usuarios }}</h2>
                     <small class="text-muted">Activos en el sistema</small>
                 </div>
             </div>
         </div>
+
     </div>
 
     <!-- Tabs -->
-    <div class="card bg-secondary border-0 shadow-lg">
-        <div class="card-header bg-dark border-0">
+    <div class="card bg-white border shadow-lg">
+        <div class="card-header bg-white border-bottom">
             <ul class="nav nav-tabs card-header-tabs" id="dashboardTabs">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#machines">Máquinas</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#ordenes">Órdenes de Trabajo</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#users">Usuarios</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#providers">Proveedores</button></li>
+                <li class="nav-item">
+                    <button class="nav-link active text-primary" data-bs-toggle="tab" data-bs-target="#machines">
+                        Máquinas
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#ordenes">
+                        Órdenes de Trabajo
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#users">
+                        Usuarios
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#providers">
+                        Proveedores
+                    </button>
+                </li>
             </ul>
         </div>
 
-        <div class="card-body bg-dark">
+        <div class="card-body bg-white">
+
             <div class="tab-content">
+
                 <!-- Máquinas -->
                 <div class="tab-pane fade show active" id="machines">
-                    <h5 class="text-info mb-4">Listado de Máquinas</h5>
+                    <h5 class="text-primary mb-4">Listado de Máquinas</h5>
+
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle">
-                            <thead>
-                                <tr class="text-info">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="table-primary">
+                                <tr>
                                     <th># Serie</th>
                                     <th>Modelo</th>
                                     <th>Estado</th>
@@ -128,13 +149,13 @@
                     </div>
                 </div>
 
-                <!-- Órdenes de Trabajo -->
+                <!-- Órdenes -->
                 <div class="tab-pane fade" id="ordenes">
-                    <h5 class="text-info mb-4">Listado de Órdenes de Trabajo</h5>
+                    <h5 class="text-primary mb-4">Listado de Órdenes de Trabajo</h5>
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle">
-                            <thead>
-                                <tr class="text-info">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="table-primary">
+                                <tr>
                                     <th>Código</th>
                                     <th>Máquina</th>
                                     <th>Tipo</th>
@@ -165,11 +186,11 @@
 
                 <!-- Usuarios -->
                 <div class="tab-pane fade" id="users">
-                    <h5 class="text-info mb-4">Listado de Usuarios</h5>
+                    <h5 class="text-primary mb-4">Listado de Usuarios</h5>
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle">
-                            <thead>
-                                <tr class="text-info">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="table-primary">
+                                <tr>
                                     <th>Nombre</th>
                                     <th>Correo</th>
                                     <th>Rol</th>
@@ -202,11 +223,11 @@
 
                 <!-- Proveedores -->
                 <div class="tab-pane fade" id="providers">
-                    <h5 class="text-info mb-4">Listado de Proveedores</h5>
+                    <h5 class="text-primary mb-4">Listado de Proveedores</h5>
                     <div class="table-responsive">
-                        <table class="table table-dark table-hover align-middle">
-                            <thead>
-                                <tr class="text-info">
+                        <table class="table table-hover table-striped align-middle">
+                            <thead class="table-primary">
+                                <tr>
                                     <th>Nombre</th>
                                     <th>Teléfono</th>
                                     <th>Correo</th>
@@ -231,6 +252,7 @@
 
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

@@ -2,43 +2,56 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="min-vh-100 bg-dark text-light py-0">
+<div class="min-vh-100 bg-light text-dark py-0">
     <div class="container">
 
-        <!-- Boton de Volver -->
-
+        <!-- Botón de Volver -->
         <style>
         .btn-gradient {
             background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
             color: white;
             border: none;
             transition: 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         .btn-gradient:hover {
             opacity: 0.85;
             transform: scale(1.03);
         }
+
+        /* Textos destacados */
+        h3, h5 {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+        }
+
+        table th, table td {
+            text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+        }
+
+        .badge {
+            font-weight: 600;
+            text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.2);
+        }
         </style>
 
-        <div class="mb-0">
-            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow">
+        <div class="mb-3">
+            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow-sm">
                 <i class="bi bi-arrow-left"></i> Volver al Panel Principal
             </a>
         </div>
-        <!-- Boton de Volver -->
 
-        <h3 class="text-center text-info mb-4">Gestión de Usuarios</h3>
+        <h3 class="text-center text-primary mb-4">Gestión de Usuarios</h3>
 
         <div class="row g-4">
             <!-- Formulario de creación -->
             <div class="col-md-4">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                    <div class="card bg-white text-dark shadow-lg border-0 rounded-4">
                         <div class="card-body">
-                            <h5 class="text-info text-center mb-3">Registrar nuevo usuario</h5>
+                            <h5 class="text-primary text-center mb-3">Registrar nuevo usuario</h5>
                             {{ form|crispy }}
-                            <button class="btn btn-info text-dark fw-bold w-100 mt-3" type="submit">
+                            <button class="btn btn-primary fw-bold w-100 mt-3 shadow-sm">
                                 Guardar Usuario
                             </button>
                         </div>
@@ -48,13 +61,13 @@
 
             <!-- Lista de usuarios -->
             <div class="col-md-8">
-                <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                <div class="card bg-white text-dark shadow-lg border-0 rounded-4">
                     <div class="card-body">
-                        <h5 class="text-info mb-3">Usuarios Registrados</h5>
+                        <h5 class="text-primary mb-3">Usuarios Registrados</h5>
                         <div class="table-responsive">
-                            <table class="table table-dark table-hover align-middle">
-                                <thead>
-                                    <tr class="text-info">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr class="text-dark">
                                         <th>Nombre</th>
                                         <th>Correo</th>
                                         <th>Rol</th>
@@ -76,10 +89,10 @@
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
-                                            <a href="{% url 'usuario_update' u.id %}" class="btn btn-success btn-sm me-2">
+                                            <a href="{% url 'usuario_update' u.id %}" class="btn btn-success btn-sm me-2 shadow-sm">
                                                 Editar
                                             </a>
-                                            <button class="btn btn-danger btn-sm"
+                                            <button class="btn btn-danger btn-sm shadow-sm"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal"
                                                     data-user-id="{{ u.id }}"
@@ -108,19 +121,19 @@
 <!-- Modal de eliminación -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light">
+        <div class="modal-content bg-white text-dark rounded-4 shadow-lg">
             <div class="modal-header border-0">
                 <h5 class="modal-title text-danger" id="deleteModalLabel">Eliminar Usuario</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 ¿Estás seguro de eliminar al usuario <strong id="userName"></strong>?
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary shadow-sm" data-bs-dismiss="modal">Cancelar</button>
                 <form method="post" id="deleteForm" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger fw-bold">Eliminar</button>
+                    <button type="submit" class="btn btn-danger fw-bold shadow-sm">Eliminar</button>
                 </form>
             </div>
         </div>

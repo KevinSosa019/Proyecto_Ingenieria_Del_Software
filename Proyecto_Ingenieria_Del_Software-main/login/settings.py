@@ -102,9 +102,9 @@ DATABASES = {
 
         # Conexión a tu SQL Server
         'NAME': 'MaquinasDePoker',
-        'USER': 'log_darkgrepher',
-        'PASSWORD': 'Pokemon_1',
-        'HOST': 'DARKGREPHER',
+        'USER': 'KevinS',
+        'PASSWORD': 'Ichigo19.',
+        'HOST': 'DESKTOP-PU1H6AA',
         'PORT': '',   # Vacío = valor por defecto
 
         'OPTIONS': {
@@ -152,6 +152,11 @@ USE_TZ = True
 
 
 import os
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # si tienes carpeta global de estáticos
+]
+
 
 # URL para acceder a archivos estáticos
 STATIC_URL = '/static/'

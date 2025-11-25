@@ -2,11 +2,10 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="min-vh-100 bg-dark text-light py-0">
+<div class="min-vh-100 bg-light text-dark py-5">
     <div class="container">
 
-        <!-- Boton de Volver -->
-
+        <!-- Botón de Volver -->
         <style>
         .btn-gradient {
             background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
@@ -20,25 +19,29 @@
         }
         </style>
 
-        <div class="mb-0">
-            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow">
+        <div class="mb-3">
+            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow-sm rounded-3">
                 <i class="bi bi-arrow-left"></i> Volver al Panel Principal
             </a>
         </div>
-        <!-- Boton de Volver -->
 
-        <h3 class="text-center text-info mb-4">Gestión de Órdenes de Trabajo</h3>
+        <!-- Título principal -->
+        <h3 class="text-center text-primary mb-4" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.1);">
+            Gestión de Órdenes de Trabajo
+        </h3>
 
         <div class="row g-4">
             <!-- Formulario de creación -->
             <div class="col-md-4">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                    <div class="card bg-white text-dark shadow-sm border-0 rounded-4">
                         <div class="card-body">
-                            <h5 class="text-info text-center mb-3">Registrar nueva orden</h5>
+                            <h5 class="text-primary text-center mb-3" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                                Registrar nueva orden
+                            </h5>
                             {{ form|crispy }}
-                            <button class="btn btn-info text-dark fw-bold w-100 mt-3" type="submit">
+                            <button class="btn btn-gradient fw-bold w-100 mt-3 shadow-sm rounded-3" type="submit">
                                 Guardar Orden
                             </button>
                         </div>
@@ -48,13 +51,15 @@
 
             <!-- Lista de órdenes -->
             <div class="col-md-8">
-                <div class="card bg-secondary text-light shadow-lg" style="border: none;">
+                <div class="card bg-white text-dark shadow-sm border-0 rounded-4">
                     <div class="card-body">
-                        <h5 class="text-info mb-3">Órdenes de Trabajo Registradas</h5>
+                        <h5 class="text-primary mb-3" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.1);">
+                            Órdenes de Trabajo Registradas
+                        </h5>
                         <div class="table-responsive">
-                            <table class="table table-dark table-hover align-middle">
-                                <thead>
-                                    <tr class="text-info">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr class="text-dark">
                                         <th>Código</th>
                                         <th>Máquina</th>
                                         <th>Tipo</th>
@@ -76,10 +81,10 @@
                                         <td>{{ o.tecnico|default:"No asignado" }}</td>
                                         <td>{{ o.usuario_creador }}</td>
                                         <td class="text-center">
-                                            <a href="{% url 'orden_trabajo_update' o.id %}" class="btn btn-success btn-sm me-2">
+                                            <a href="{% url 'orden_trabajo_update' o.id %}" class="btn btn-success btn-sm me-2 shadow-sm rounded-2">
                                                 Editar
                                             </a>
-                                            <button class="btn btn-danger btn-sm"
+                                            <button class="btn btn-danger btn-sm shadow-sm rounded-2"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#deleteModal"
                                                     data-orden-id="{{ o.id }}"
@@ -108,19 +113,19 @@
 <!-- Modal de eliminación -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light">
+        <div class="modal-content bg-white text-dark rounded-4 shadow-sm">
             <div class="modal-header border-0">
                 <h5 class="modal-title text-danger" id="deleteModalLabel">Eliminar Orden</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 ¿Estás seguro de eliminar la orden con código <strong id="ordenCodigo"></strong>?
             </div>
             <div class="modal-footer border-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary shadow-sm rounded-3" data-bs-dismiss="modal">Cancelar</button>
                 <form method="post" id="deleteForm" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger fw-bold">Eliminar</button>
+                    <button type="submit" class="btn btn-danger fw-bold shadow-sm rounded-3">Eliminar</button>
                 </form>
             </div>
         </div>

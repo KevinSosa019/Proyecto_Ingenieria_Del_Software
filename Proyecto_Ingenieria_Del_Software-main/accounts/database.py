@@ -19,8 +19,8 @@ import pyodbc
 def get_connection():
     return pyodbc.connect(
         'DRIVER={ODBC Driver 17 for SQL Server};'
-        'SERVER=DARKGREPHER;'
+        'SERVER=DESKTOP-PU1H6AA;'
         'DATABASE=MaquinasDePoker;'
-        'UID=log_darkgrepher;'
-        'PWD=Pokemon_1'
+        'UID=KevinS;'
+        'PWD=Ichigo19.'
     )
