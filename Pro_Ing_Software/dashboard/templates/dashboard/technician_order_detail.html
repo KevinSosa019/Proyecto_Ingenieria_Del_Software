@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Orden {{ order.codigo }}</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+
+<body class="bg-gray-100 min-h-screen p-10">
+
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow">
+
+    <!-- Título principal -->
+    <h1 class="text-3xl font-bold mb-4">Orden {{ order.codigo }}</h1>
+
+    <!-- Datos generales de la orden -->
+    <p><strong>Estado:</strong> {{ order.estado }}</p>
+    <p><strong>Tipo:</strong> {{ order.tipo }}</p>
+    <p><strong>Prioridad:</strong> {{ order.prioridad }}</p>
+    <p><strong>Descripción:</strong> {{ order.descripcion }}</p>
+
+    <hr class="my-4">
+
+    <!-- Datos de la máquina -->
+    <h2 class="text-2xl font-semibold mb-2">Máquina</h2>
+    <p><strong>Serie:</strong> {{ order.serial }}</p>
+    <p><strong>Modelo:</strong> {{ order.modelo }}</p>
+
+    <hr class="my-4">
+
+    <!-- Cliente -->
+    <h2 class="text-2xl font-semibold mb-2">Cliente</h2>
+    <p><strong>Nombre:</strong> {{ order.cliente_nombre }}</p>
+    <p><strong>Teléfono:</strong> {{ order.cliente_telefono }}</p>
+
+    <hr class="my-4">
+
+    <!-- Fechas -->
+    <h2 class="text-2xl font-semibold mb-2">Fechas</h2>
+    <p><strong>Creación:</strong> {{ order.fecha_creacion }}</p>
+    <p><strong>Asignación:</strong> {{ order.fecha_asignacion }}</p>
+    <p><strong>Inicio:</strong> {{ order.fecha_inicio|default:"-" }}</p>
+    <p><strong>Finalización:</strong> {{ order.fecha_finalizacion|default:"-" }}</p>
+
+    <hr class="my-4">
+
+    <!-- Técnico asignado -->
+    <h2 class="text-2xl font-semibold mb-2">Técnico</h2>
+
+    {% if order.tecnico_id %}
+        <p><strong>Asignado a:</strong> {{ order.tecnico_nombre }}</p>
+    {% else %}
+        <p class="text-red-500 font-semibold">Ningún técnico asignado</p>
+    {% endif %}
+
+    <!-- Volver al panel -->
+    <a href="/dashboard/technician/"
+       class="block mt-6 text-blue-600 hover:underline">
+        ← Volver al Panel
+    </a>
+
+</div>
+
+</body>
+</html>

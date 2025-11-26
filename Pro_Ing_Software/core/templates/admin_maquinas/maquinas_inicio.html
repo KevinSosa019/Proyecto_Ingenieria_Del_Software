@@ -1,0 +1,156 @@
+{% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="min-vh-100 bg-light text-dark py-5">
+    <div class="container">
+
+        <!-- Botón de Volver -->
+        <style>
+        .btn-gradient {
+            background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+            color: white;
+            border: none;
+            transition: 0.3s;
+            box-shadow: 1px 2px 6px rgba(0,0,0,0.2);
+        }
+        .btn-gradient:hover {
+            opacity: 0.85;
+            transform: scale(1.03);
+        }
+        .text-glow {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1), 0 0 6px rgba(0,123,255,0.3);
+        }
+        .table-header-glow th {
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        </style>
+
+        <div class="mb-3">
+            <a href="{% url 'admin_inicio' %}" class="btn btn-gradient fw-bold shadow-sm rounded-3">
+                <i class="bi bi-arrow-left"></i> Volver al Panel Principal
+            </a>
+        </div>
+
+        <!-- Título principal -->
+        <h3 class="text-center text-primary mb-4 text-glow">
+            Gestión de Máquinas
+        </h3>
+
+        <div class="row g-4">
+            <!-- Formulario de creación -->
+            <div class="col-md-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="card bg-white text-dark shadow-sm border-0 rounded-4">
+                        <div class="card-body">
+                            <h5 class="text-primary text-center mb-3 text-glow">
+                                Registrar nueva máquina
+                            </h5>
+                            {{ form|crispy }}
+                            <button class="btn btn-primary fw-bold w-100 mt-3 shadow-sm rounded-3 text-glow" type="submit">
+                                Guardar Máquina
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de máquinas -->
+            <div class="col-md-8">
+                <div class="card bg-white text-dark shadow-sm border-0 rounded-4">
+                    <div class="card-body">
+                        <h5 class="text-primary mb-3 text-glow">
+                            Máquinas Registradas
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light table-header-glow">
+                                    <tr class="text-dark">
+                                        <th>N° Serie</th>
+                                        <th>Modelo</th>
+                                        <th>Estado</th>
+                                        <th>Proveedor</th>
+                                        <th>Ubicación</th>
+                                        <th>Usuario Asignado</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for m in maquinas %}
+                                    <tr>
+                                        <td>{{ m.numero_serie }}</td>
+                                        <td>{{ m.modelo }}</td>
+                                        <td>{{ m.estado }}</td>
+                                        <td>{{ m.proveedor }}</td>
+                                        <td>{{ m.ubicacion }}</td>
+                                        <td>{{ m.usuario_asignado }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'maquina_update' m.id %}" class="btn btn-success btn-sm me-2 shadow-sm rounded-2 text-glow">
+                                                Editar
+                                            </a>
+                                            <button class="btn btn-danger btn-sm shadow-sm rounded-2 text-glow"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteModal"
+                                                    data-maquina-id="{{ m.id }}"
+                                                    data-maquina-serie="{{ m.numero_serie }}">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">
+                                            No hay máquinas registradas.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de eliminación -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-white text-dark rounded-4 shadow-sm">
+            <div class="modal-header border-0">
+                <h5 class="modal-title text-danger text-glow" id="deleteModalLabel">Eliminar Máquina</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body text-glow">
+                ¿Estás seguro de eliminar la máquina con número de serie <strong id="maquinaSerie"></strong>?
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary shadow-sm rounded-3 text-glow" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" id="deleteForm" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger fw-bold shadow-sm rounded-3 text-glow">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script del modal -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var maquinaId = button.getAttribute('data-maquina-id');
+        var maquinaSerie = button.getAttribute('data-maquina-serie');
+        var modalMaquinaSerie = deleteModal.querySelector('#maquinaSerie');
+        var form = deleteModal.querySelector('#deleteForm');
+
+        modalMaquinaSerie.textContent = maquinaSerie;
+        form.action = "{% url 'maquina_delete' 0 %}".replace('0', maquinaId);
+    });
+});
+</script>
+{% endblock %}
